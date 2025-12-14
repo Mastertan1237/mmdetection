@@ -14,6 +14,7 @@ from torch import Tensor
 
 from mmdet.registry import MODELS
 from mmdet.models.dense_heads import DINOHead
+from mmdet.models.layers import inverse_sigmoid
 from mmdet.structures import SampleList
 from mmdet.utils import InstanceList, OptInstanceList
 
@@ -194,12 +195,12 @@ class DIDAHead(DINOHead):
             # Apply bbox regression branch
             bbox_pred = self.reg_branches[layer_idx](layer_hidden)
             
-            # Update reference
+            # Update reference using inverse_sigmoid
             if layer_ref.shape[-1] == 4:
-                bbox_pred = bbox_pred + layer_ref.inverse_sigmoid()
+                bbox_pred = bbox_pred + inverse_sigmoid(layer_ref)
             else:
                 assert layer_ref.shape[-1] == 2
-                bbox_pred[..., :2] = bbox_pred[..., :2] + layer_ref.inverse_sigmoid()
+                bbox_pred[..., :2] = bbox_pred[..., :2] + inverse_sigmoid(layer_ref)
             
             all_layers_bbox_preds.append(bbox_pred)
         
