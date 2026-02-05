@@ -6,22 +6,22 @@ from mmdet.models.roi_heads.bbox_heads import RetroCalibETFHeadWithOrthLoss
 
 class TestRetroCalibETFHead(TestCase):
 
-    def test_init(self):
+    def test_retro_etf_head():
         """Test initialization of RetroCalibETFHeadWithOrthLoss."""
         bbox_head = RetroCalibETFHeadWithOrthLoss(
             in_channels=256,
             fc_out_channels=1024,
             num_classes=80,
-            na=4,
-            ad=256,
-            eo=True)
+            num_adapters=4,
+            adapter_dim=256,
+            enable_orthogonal=True)
         
         self.assertTrue(bbox_head.fc_cls)
         self.assertTrue(bbox_head.fc_reg)
-        self.assertEqual(bbox_head.na, 4)
-        self.assertEqual(bbox_head.ad, 256)
-        self.assertTrue(bbox_head.eo)
-        self.assertEqual(len(bbox_head.abs), 4)
+        self.assertEqual(bbox_head.num_adapters, 4)
+        self.assertEqual(bbox_head.adapter_dim, 256)
+        self.assertTrue(bbox_head.enable_orthogonal)
+        self.assertEqual(len(bbox_head.adapter_banks), 4)
 
     def test_forward(self):
         """Test forward pass."""
